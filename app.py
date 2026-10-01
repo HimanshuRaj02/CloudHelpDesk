@@ -1,14 +1,24 @@
 from flask import Flask, request, jsonify
 import mysql.connector
 import boto3
+from botocore.config import Config
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
-S3_BUCKET = "cloudhelpdesk-attachments-977989887647-eu-north-1-an"
-s3 = boto3.client("s3")
-app = Flask(__name__)
 
+S3_BUCKET = "cloudhelpdesk-attachments-977989887647-eu-north-1-an"
+
+s3 = boto3.client(
+    "s3",
+    region_name="eu-north-1",
+    config=Config(
+        signature_version="s3v4",
+        s3={"addressing_style": "virtual"}
+    )
+)
+
+app = Flask(__name__)
 
 def get_db_connection():
     return mysql.connector.connect(

@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import mysql.connector
 import boto3
+import mimetypes
 from botocore.config import Config
 from dotenv import load_dotenv
 import os
@@ -42,17 +43,21 @@ def get_tickets():
 
     cursor.execute("SELECT * FROM tickets ORDER BY id DESC")
     tickets = cursor.fetchall()
+
     for ticket in tickets:
         if ticket["attachment"]:
+            content_type, _ = mimetypes.guess_type(ticket["attachment"])
+
             ticket["attachment_url"] = s3.generate_presigned_url(
                 "get_object",
                 Params={
                     "Bucket": S3_BUCKET,
-                    "Key": ticket["attachment"]
+                    "Key": ticket["attachment"],
+                    "ResponseContentDisposition": "inline",
+                    "ResponseContentType": content_type or "application/octet-stream"
                 },
                 ExpiresIn=3600
             )
-
 
     cursor.close()
     connection.close()

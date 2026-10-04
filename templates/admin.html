@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CloudHelpDesk Admin</title>
+</head>
+
+<body>
+
+    <h1>CloudHelpDesk Admin Dashboard</h1>
+
+    <h2>All Support Tickets</h2>
+
+    <div id="tickets">
+        Loading tickets...
+    </div>
+
+    <script>
+        async function loadTickets() {
+            const response = await fetch("/tickets");
+            const tickets = await response.json();
+
+            const ticketsDiv = document.getElementById("tickets");
+            ticketsDiv.innerHTML = "";
+
+            tickets.forEach(ticket => {
+
+                const ticketElement = document.createElement("div");
+
+                ticketElement.innerHTML = `
+                    <p>
+                        <strong>Ticket ID:</strong> ${ticket.id}<br>
+                        <strong>Title:</strong> ${ticket.title}<br>
+                        <strong>Priority:</strong> ${ticket.priority}<br>
+                        <strong>Status:</strong> ${ticket.status}<br>
+                        <strong>Created:</strong> ${ticket.created_at}<br>
+
+                        ${
+                            ticket.attachment_url
+                            ? `<a href="${ticket.attachment_url}" target="_blank">
+                                View Attachment
+                               </a>`
+                            : "No attachment"
+                        }
+                    </p>
+                    <hr>
+                `;
+
+                ticketsDiv.appendChild(ticketElement);
+            });
+        }
+
+        loadTickets();
+    </script>
+
+</body>
+</html>

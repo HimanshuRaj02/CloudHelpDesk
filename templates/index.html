@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CloudHelpDesk</title>
+</head>
+
+<body>
+
+    <h1>CloudHelpDesk</h1>
+    <h2>Create Support Ticket</h2>
+
+    <form id="ticketForm">
+
+        <label>Title:</label><br>
+        <input type="text" id="title" required>
+        <br><br>
+
+        <label>Priority:</label><br>
+        <select id="priority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+        </select>
+        <br><br>
+
+        <label>Attachment:</label><br>
+        <input type="file" id="file">
+        <br><br>
+
+        <button type="submit">Create Ticket</button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <hr>
+
+    <h2>Existing Tickets</h2>
+
+    <div id="tickets"></div>
+
+</body>
+<script>
+    const form = document.getElementById("ticketForm");
+    const message = document.getElementById("message");
+    const ticketsDiv = document.getElementById("tickets");
+
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const priority = document.getElementById("priority").value;
+        const file = document.getElementById("file").files[0];
+
+        let attachment = null;
+
+        // Upload file to S3 first
+        if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const uploadResponse = await fetch("/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            const uploadData = await uploadResponse.json();
+            attachment = uploadData.filename;
+        }
+
+        // Create ticket in RDS
+        const ticketResponse = await fetch("/tickets", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title: title,
+                priority: priority,
+                attachment: attachment
+            })
+        });
+
+        const ticketData = await ticketResponse.json();
+
+        message.textContent = ticketData.message;
+
+        form.reset();
+
+        loadTickets();
+    });
+
+
+    async function loadTickets() {
+        const response = await fetch("/tickets");
+        const tickets = await response.json();
+
+        ticketsDiv.innerHTML = "";
+
+        tickets.forEach(ticket => {
+
+            const ticketElement = document.createElement("div");
+
+            ticketElement.innerHTML = `
+                <p>
+                    <strong>ID:</strong> ${ticket.id}<br>
+                    <strong>Title:</strong> ${ticket.title}<br>
+                    <strong>Priority:</strong> ${ticket.priority}<br>
+                    <strong>Status:</strong> ${ticket.status}<br>
+                    ${ticket.attachment_url
+                        ? `<a href="${ticket.attachment_url}" target="_blank">View Attachment</a>`
+                        : "No attachment"
+                    }
+                </p>
+                <hr>
+            `;
+
+            ticketsDiv.appendChild(ticketElement);
+        });
+    }
+
+    // Load existing tickets when page opens
+    loadTickets();
+</script>
+</html>

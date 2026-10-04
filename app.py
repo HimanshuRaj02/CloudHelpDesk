@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import mysql.connector
 import boto3
 import mimetypes
@@ -33,8 +33,10 @@ def get_db_connection():
 
 @app.route("/")
 def home():
-    return "CloudHelpDesk is running! CI/CD deployment successful."
-
+    return render_template("index.html")
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
 
 @app.route("/tickets", methods=["GET"])
 def get_tickets():

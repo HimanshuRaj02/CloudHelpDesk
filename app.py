@@ -33,7 +33,7 @@ def get_db_connection():
 
 @app.route("/")
 def home():
-    return "CloudHelpDesk is running!"
+    return "CloudHelpDesk is running! CI/CD deployment successful."
 
 
 @app.route("/tickets", methods=["GET"])

@@ -1,125 +1,320 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CloudHelpDesk</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CloudHelpDesk | Support Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #172554;
+            color: white;
+            padding: 22px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 50px auto;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #172554;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-bottom: 25px;
+            color: #172554;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .file-box {
+            padding: 10px;
+            background: #f8fafc;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            display: block !important;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block !important;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>CloudHelpDesk</h1>
-    <h2>Create Support Ticket</h2>
+<header class="header">
+    <div class="logo">☁ CloudHelpDesk</div>
+    <div class="badge">IT Support Portal</div>
+</header>
 
-    <form id="ticketForm">
+<main class="container">
 
-        <label>Title:</label><br>
-        <input type="text" id="title" required>
-        <br><br>
+    <section class="hero">
+        <h1>How can we help?</h1>
+        <p>Submit your IT support request and our team will review it.</p>
+    </section>
 
-        <label>Priority:</label><br>
-        <select id="priority">
-            <option value="Low">Low</option>
-            <option value="Medium" selected>Medium</option>
-            <option value="High">High</option>
-        </select>
-        <br><br>
+    <section class="card">
 
-        <label>Attachment:</label><br>
-        <input type="file" id="file">
-        <br><br>
+        <h2>Submit a Support Ticket</h2>
 
-        <button type="submit">Create Ticket</button>
+        <form id="ticketForm">
 
-    </form>
+            <div class="form-group">
+                <label for="title">Issue / Problem</label>
+                <input
+                    type="text"
+                    id="title"
+                    placeholder="Example: Laptop keyboard is not working"
+                    required
+                >
+            </div>
 
-    <p id="message"></p>
+            <div class="form-group">
+                <label for="priority">Priority</label>
 
-    <hr>
+                <select id="priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
 
-    <h2>Existing Tickets</h2>
+            <div class="form-group">
+                <label for="file">Attachment (Optional)</label>
 
-    <div id="tickets"></div>
+                <input
+                    class="file-box"
+                    type="file"
+                    id="file"
+                >
+            </div>
 
-</body>
+            <button type="submit" id="submitButton">
+                Submit Support Ticket
+            </button>
+
+        </form>
+
+        <p id="message"></p>
+
+    </section>
+
+    <div class="footer">
+        CloudHelpDesk • Cloud-based IT Support System
+    </div>
+
+</main>
+
 <script>
+
     const form = document.getElementById("ticketForm");
     const message = document.getElementById("message");
-    const ticketsDiv = document.getElementById("tickets");
+    const submitButton = document.getElementById("submitButton");
 
     form.addEventListener("submit", async function(event) {
+
         event.preventDefault();
 
-        const title = document.getElementById("title").value;
-        const priority = document.getElementById("priority").value;
-        const file = document.getElementById("file").files[0];
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
 
-        let attachment = null;
+        message.className = "";
+        message.style.display = "none";
 
-        // Upload file to S3 first
-        if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
+        try {
 
-            const uploadResponse = await fetch("/upload", {
+            const title = document.getElementById("title").value;
+            const priority = document.getElementById("priority").value;
+            const file = document.getElementById("file").files[0];
+
+            let attachment = null;
+
+            // Upload attachment to S3
+            if (file) {
+
+                const formData = new FormData();
+
+                formData.append("file", file);
+
+                const uploadResponse = await fetch("/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error("File upload failed");
+                }
+
+                const uploadData = await uploadResponse.json();
+
+                attachment = uploadData.filename;
+            }
+
+            // Create ticket in RDS
+            const ticketResponse = await fetch("/tickets", {
                 method: "POST",
-                body: formData
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    title: title,
+                    priority: priority,
+                    attachment: attachment
+                })
             });
 
-            const uploadData = await uploadResponse.json();
-            attachment = uploadData.filename;
+            if (!ticketResponse.ok) {
+                throw new Error("Ticket creation failed");
+            }
+
+            const ticketData = await ticketResponse.json();
+
+            message.textContent =
+                "✓ " + ticketData.message;
+
+            message.className = "success";
+
+            form.reset();
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent =
+                "Something went wrong. Please try again.";
+
+            message.className = "error";
+
+        } finally {
+
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Support Ticket";
+
         }
 
-        // Create ticket in RDS
-        const ticketResponse = await fetch("/tickets", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                title: title,
-                priority: priority,
-                attachment: attachment
-            })
-        });
-
-        const ticketData = await ticketResponse.json();
-
-        message.textContent = ticketData.message;
-
-        form.reset();
-
-        loadTickets();
     });
 
-
-    async function loadTickets() {
-        const response = await fetch("/tickets");
-        const tickets = await response.json();
-
-        ticketsDiv.innerHTML = "";
-
-        tickets.forEach(ticket => {
-
-            const ticketElement = document.createElement("div");
-
-            ticketElement.innerHTML = `
-                <p>
-                    <strong>ID:</strong> ${ticket.id}<br>
-                    <strong>Title:</strong> ${ticket.title}<br>
-                    <strong>Priority:</strong> ${ticket.priority}<br>
-                    <strong>Status:</strong> ${ticket.status}<br>
-                    ${ticket.attachment_url
-                        ? `<a href="${ticket.attachment_url}" target="_blank">View Attachment</a>`
-                        : "No attachment"
-                    }
-                </p>
-                <hr>
-            `;
-
-            ticketsDiv.appendChild(ticketElement);
-        });
-    }
-
-    // Load existing tickets when page opens
-    loadTickets();
 </script>
+
+</body>
 </html>

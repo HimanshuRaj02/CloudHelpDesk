@@ -1,56 +1,406 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>CloudHelpDesk Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CloudHelpDesk | Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #172554;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .hero {
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            color: #172554;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            color: #64748b;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .stat-card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            font-size: 28px;
+            font-weight: bold;
+            color: #172554;
+        }
+
+        .tickets-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .tickets-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tickets-header h2 {
+            color: #172554;
+        }
+
+        .ticket {
+            padding: 22px 25px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .ticket:last-child {
+            border-bottom: none;
+        }
+
+        .ticket-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .ticket-id {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .ticket-title {
+            font-size: 19px;
+            font-weight: bold;
+            color: #172554;
+            margin-bottom: 12px;
+        }
+
+        .details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .badge-small {
+            padding: 6px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .priority-low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .created {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .attachment {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 9px 14px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .attachment:hover {
+            background: #1d4ed8;
+        }
+
+        .no-attachment {
+            margin-top: 15px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .loading,
+        .empty {
+            padding: 35px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .footer {
+            text-align: center;
+            margin: 30px 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 18px 5%;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .ticket-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>CloudHelpDesk Admin Dashboard</h1>
+<header class="header">
+    <div class="logo">☁ CloudHelpDesk</div>
+    <div class="badge">Admin Dashboard</div>
+</header>
 
-    <h2>All Support Tickets</h2>
+<main class="container">
 
-    <div id="tickets">
-        Loading tickets...
+    <section class="hero">
+        <h1>Support Ticket Dashboard</h1>
+        <p>Monitor and review all customer support requests.</p>
+    </section>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <h3>Total Tickets</h3>
+            <p id="totalTickets">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Open Tickets</h3>
+            <p id="openTickets">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>High Priority</h3>
+            <p id="highTickets">0</p>
+        </div>
+
+    </section>
+
+    <section class="tickets-card">
+
+        <div class="tickets-header">
+            <h2>All Support Tickets</h2>
+        </div>
+
+        <div id="tickets">
+            <div class="loading">Loading tickets...</div>
+        </div>
+
+    </section>
+
+    <div class="footer">
+        CloudHelpDesk • Cloud-based IT Support System
     </div>
 
-    <script>
-        async function loadTickets() {
-            const response = await fetch("/tickets");
-            const tickets = await response.json();
+</main>
 
-            const ticketsDiv = document.getElementById("tickets");
-            ticketsDiv.innerHTML = "";
+<script>
 
-            tickets.forEach(ticket => {
+async function loadTickets() {
 
-                const ticketElement = document.createElement("div");
+    try {
 
-                ticketElement.innerHTML = `
-                    <p>
-                        <strong>Ticket ID:</strong> ${ticket.id}<br>
-                        <strong>Title:</strong> ${ticket.title}<br>
-                        <strong>Priority:</strong> ${ticket.priority}<br>
-                        <strong>Status:</strong> ${ticket.status}<br>
-                        <strong>Created:</strong> ${ticket.created_at}<br>
+        const response = await fetch("/tickets");
 
-                        ${
-                            ticket.attachment_url
-                            ? `<a href="${ticket.attachment_url}" target="_blank">
-                                View Attachment
-                               </a>`
-                            : "No attachment"
-                        }
-                    </p>
-                    <hr>
-                `;
-
-                ticketsDiv.appendChild(ticketElement);
-            });
+        if (!response.ok) {
+            throw new Error("Failed to load tickets");
         }
 
-        loadTickets();
-    </script>
+        const tickets = await response.json();
+
+        const ticketsDiv = document.getElementById("tickets");
+
+        ticketsDiv.innerHTML = "";
+
+        document.getElementById("totalTickets").textContent =
+            tickets.length;
+
+        document.getElementById("openTickets").textContent =
+            tickets.filter(ticket => ticket.status === "Open").length;
+
+        document.getElementById("highTickets").textContent =
+            tickets.filter(ticket => ticket.priority === "High").length;
+
+        if (tickets.length === 0) {
+
+            ticketsDiv.innerHTML =
+                '<div class="empty">No support tickets found.</div>';
+
+            return;
+        }
+
+        tickets.forEach(ticket => {
+
+            const ticketElement = document.createElement("div");
+
+            ticketElement.className = "ticket";
+
+            let priorityClass = "priority-medium";
+
+            if (ticket.priority === "High") {
+                priorityClass = "priority-high";
+            }
+
+            if (ticket.priority === "Low") {
+                priorityClass = "priority-low";
+            }
+
+            const attachmentHTML = ticket.attachment_url
+                ? `<a class="attachment"
+                     href="${ticket.attachment_url}"
+                     target="_blank">
+                     📎 View Attachment
+                   </a>`
+                : `<div class="no-attachment">
+                     No attachment
+                   </div>`;
+
+            ticketElement.innerHTML = `
+
+                <div class="ticket-top">
+
+                    <div class="ticket-id">
+                        Ticket #${ticket.id}
+                    </div>
+
+                    <div class="created">
+                        ${ticket.created_at}
+                    </div>
+
+                </div>
+
+                <div class="ticket-title">
+                    ${ticket.title}
+                </div>
+
+                <div class="details">
+
+                    <span class="badge-small ${priorityClass}">
+                        ${ticket.priority} Priority
+                    </span>
+
+                    <span class="badge-small status">
+                        ${ticket.status}
+                    </span>
+
+                </div>
+
+                ${attachmentHTML}
+
+            `;
+
+            ticketsDiv.appendChild(ticketElement);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("tickets").innerHTML =
+            '<div class="empty">Unable to load tickets.</div>';
+
+    }
+}
+
+loadTickets();
+
+</script>
 
 </body>
 </html>
